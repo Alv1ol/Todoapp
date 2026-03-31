@@ -42,11 +42,11 @@ func NewUserUnitialized(
 }
 
 func (u *User) Validate() error {
-	fullNameLength := len([]rune(u.FullName))
-	if fullNameLength < 3 || fullNameLength > 100 {
+	fullNameLen := len([]rune(u.FullName))
+	if fullNameLen < 3 || fullNameLen > 100 {
 		return fmt.Errorf(
 			"Invalid `FullName` len: %d: %w",
-			fullNameLength,
+			fullNameLen,
 			core_errors.ErrInvalidArgument,
 		)
 	}
