@@ -66,7 +66,7 @@ func (r *TaskRepository) PatchTask(
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return domain.Task{}, fmt.Errorf(
-				"user with id='%d' concurrently accessed: %w",
+				"task with id='%d' concurrently accessed: %w",
 				id,
 				core_errors.ErrConflict,
 			)

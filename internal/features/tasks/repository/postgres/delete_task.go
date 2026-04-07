@@ -16,7 +16,7 @@ func (r *TaskRepository) DeleteTask(
 
 	query := `
 	DELETE FROM todoapp.tasks
-	WHERE id=$1
+	WHERE id=$1;
 	`
 	
 	cmdTag, err := r.pool.Exec(ctx, query, id)
@@ -24,7 +24,7 @@ func (r *TaskRepository) DeleteTask(
 		return fmt.Errorf("Exec query: %w", err)
 	}
 	if cmdTag.RowsAffected() == 0 {
-		return fmt.Errorf("user with id='%d': %w", id, core_errors.ErrNotFound)
+		return fmt.Errorf("task with id='%d': %w", id, core_errors.ErrNotFound)
 	}
 
 	return nil

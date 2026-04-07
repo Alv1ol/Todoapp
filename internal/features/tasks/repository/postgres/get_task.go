@@ -43,7 +43,7 @@ func (r *TaskRepository) GetTask(
 	)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return domain.Task{}, fmt.Errorf("user with id='%d': '%w'",
+			return domain.Task{}, fmt.Errorf("task with id='%d': '%w'",
 				id,
 				core_errors.ErrNotFound,
 			)
