@@ -7,7 +7,7 @@ env-up:
 	@docker compose up -d todoapp-postgres
 
 env-down:
-	@docker compose down todoapp-postgres
+	@docker compose down todoapp-postgres todoapp
 
 env-cleanup:
 	@read -p "Очистить все volume файлы окружения? Опастность утраты данных. [y/N]: " ans; \
@@ -66,3 +66,9 @@ todoapp-run:
 	export POSTGRES_HOST=localhost && \
 	go mod tidy && \
 	go run cmd/todoapp/main.go
+
+todoapp-deploy:
+	@docker compose up -d --build todoapp
+
+ps:
+	@docker compose ps
