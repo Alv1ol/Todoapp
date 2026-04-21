@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Todo App</title>
+
+<style>
+:root {
+  --bg: #f8fafc;
+  --text: #0f172a;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --accent: #3b82f6;
+  --danger: #ef4444;
+}
+
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --text: #e2e8f0;
+  --card: #1e293b;
+  --border: #334155;
+  --accent: #60a5fa;
+  --danger: #f87171;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* HEADER */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+/* MAIN */
+main {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* SECTIONS */
+section {
+  margin-bottom: 32px;
+}
+
+h2 {
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+/* FORM */
+form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  outline: none;
+  flex: 1;
+  min-width: 120px;
+}
+
+input:focus {
+  border-color: var(--accent);
+}
+
+/* BUTTONS */
+button {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* SECONDARY BUTTONS */
+.card button {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.card button:hover {
+  background: var(--border);
+}
+
+/* DELETE BUTTON */
+.card button:last-child {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.card button:last-child:hover {
+  background: var(--danger);
+  color: white;
+}
+
+/* CARDS */
+.card {
+  background: var(--card);
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+}
+
+/* TASK STATUS */
+.card span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* STATS */
+pre {
+  background: var(--card);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+/* THEME BUTTON */
+#themeToggle {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+#themeToggle:hover {
+  background: var(--border);
+}
+</style>
+
+</head>
+<body>
+
+<header>
+  <h1>Todo</h1>
+  <button id="themeToggle">🌙</button>
+</header>
+
+<main>
+
+<section>
+  <h2>Users</h2>
+  <form id="userForm">
+    <input placeholder="Full name" id="userName" required />
+    <input placeholder="Phone (+123...)" id="userPhone" />
+    <button>Create</button>
+  </form>
+  <div id="users"></div>
+</section>
+
+<section>
+  <h2>Tasks</h2>
+  <form id="taskForm">
+    <input placeholder="Title" id="taskTitle" required />
+    <input placeholder="Description" id="taskDesc" />
+    <input placeholder="User ID" id="taskUserId" required />
+    <button>Create</button>
+  </form>
+  <div id="tasks"></div>
+</section>
+
+<section>
+  <h2>Statistics</h2>
+  <button id="loadStats">Load</button>
+  <pre id="stats"></pre>
+</section>
+
+</main>
+
+<script>
+const API = "http://127.0.0.1:5050/api/v1";
+
+// THEME (с сохранением)
+const toggle = document.getElementById("themeToggle");
+
+function setTheme(theme) {
+  document.body.setAttribute("data-theme", theme);
+  localStorage.setItem("theme", theme);
+}
+
+toggle.onclick = () => {
+  const current = document.body.getAttribute("data-theme") || "light";
+  setTheme(current === "dark" ? "light" : "dark");
+};
+
+// init theme
+setTheme(localStorage.getItem("theme") || "light");
+
+// USERS
+const usersDiv = document.getElementById("users");
+
+async function loadUsers() {
+  const res = await fetch(`${API}/users`);
+  const users = await res.json();
+
+  usersDiv.innerHTML = "";
+  users.forEach(u => {
+    const el = document.createElement("div");
+    el.className = "card";
+    el.innerHTML = `
+      <span>${u.id}: ${u.full_name}</span>
+      <button onclick="deleteUser(${u.id})">❌</button>
+    `;
+    usersDiv.appendChild(el);
+  });
+}
+
+async function deleteUser(id) {
+  await fetch(`${API}/users/${id}`, { method: "DELETE" });
+  loadUsers();
+}
+
+document.getElementById("userForm").onsubmit = async e => {
+  e.preventDefault();
+
+  await fetch(`${API}/users`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      full_name: userName.value,
+      phone_number: userPhone.value || undefined
+    })
+  });
+
+  userName.value = "";
+  userPhone.value = "";
+
+  loadUsers();
+};
+
+// TASKS
+const tasksDiv = document.getElementById("tasks");
+
+async function loadTasks() {
+  const res = await fetch(`${API}/tasks`);
+  const data = await res.json();
+
+  const tasks = data.flat();
+
+  tasksDiv.innerHTML = "";
+  tasks.forEach(t => {
+    const el = document.createElement("div");
+    el.className = "card";
+    el.innerHTML = `
+      <span>
+        ${t.id}: ${t.title} 
+        [${t.completed ? "✔" : "❌"}]
+      </span>
+      <div>
+        <button onclick="toggleTask(${t.id}, ${t.completed})">✓</button>
+        <button onclick="deleteTask(${t.id})">❌</button>
+      </div>
+    `;
+    tasksDiv.appendChild(el);
+  });
+}
+
+async function deleteTask(id) {
+  await fetch(`${API}/tasks/${id}`, { method: "DELETE" });
+  loadTasks();
+}
+
+async function toggleTask(id, completed) {
+  await fetch(`${API}/tasks/${id}`, {
+    method: "PATCH",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      completed: { set: true, value: !completed }
+    })
+  });
+  loadTasks();
+}
+
+document.getElementById("taskForm").onsubmit = async e => {
+  e.preventDefault();
+
+  await fetch(`${API}/tasks`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      title: taskTitle.value,
+      description: taskDesc.value || undefined,
+      author_user_id: Number(taskUserId.value)
+    })
+  });
+
+  taskTitle.value = "";
+  taskDesc.value = "";
+  taskUserId.value = "";
+
+  loadTasks();
+};
+
+// STATS
+document.getElementById("loadStats").onclick = async () => {
+  const res = await fetch(`${API}/statistics`);
+  const stats = await res.json();
+
+  document.getElementById("stats").textContent =
+    JSON.stringify(stats, null, 2);
+};
+
+// INIT
+loadUsers();
+loadTasks();
+
+</script>
+
+</body>
+</html>
