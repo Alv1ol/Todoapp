@@ -18,6 +18,20 @@ type GetStatisticsResponce struct {
 	TaskAverageComplitionTime *string
 }
 
+
+// GetStatistics godoc
+// @Summary Get statistics
+// @Description Get statistics. UserID, from and to query params are optional. If userID is provided, statistics will be returned for specific user, otherwise for all users. From and to query params are used to filter statistics by date. Date must be in format `YYYY-MM-DD`. If from is provided, statistics will be returned from this date, otherwise from the beginning of time. If to is provided, statistics will be returned to this date, otherwise to the end of time.
+// @Tags statistics
+// @Accept json
+// @Produce json
+// @Param user_id query int false "user id"
+// @Param from query string false "from date in format `YYYY-MM-DD`"
+// @Param to query string false "to date in format `YYYY-MM-DD`"
+// @Success 200 {object} GetStatisticsResponce
+// @Failure 400 {object} core_http_response.ErrorResponse "bad request"
+// @Failure 500 {object} core_http_response.ErrorResponse "internal server error"
+// @Router /statistics [get]
 func (h *StatisticsHTTPHandler) GetStatistics(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

@@ -38,7 +38,7 @@ type UsersService interface {
 		ctx context.Context,
 		id int,
 		patch domain.UserPatch,
-	) (domain.User, error)
+	) (domain.User, error) 
 }
 
 func NewUsersHTTPHandler(

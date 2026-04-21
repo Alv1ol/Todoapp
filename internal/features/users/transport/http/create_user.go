@@ -10,12 +10,23 @@ import (
 )
 
 type CreateUserRequest struct {
-	FullName    string  `json:"full_name" validate:"required,min=3,max=100"`
-	PhoneNumber *string `json:"phone_number" validate:"omitempty,e164"`
+	FullName    string  `json:"full_name" validate:"required,min=3,max=100" example:"John Doe"`
+	PhoneNumber *string `json:"phone_number" validate:"omitempty,e164" example:"+79998887766"`
 }
 
 type CreateUserResponse UserDTOResponce
 
+// CreateUser godoc
+// @Summary Create user
+// @Description Create user with full name and optional phone number
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body CreateUserRequest true "create user request"
+// @Success 201 {object} CreateUserResponse
+// @Failure 400 {object} core_http_response.ErrorResponse "bad request"
+// @Failure 500 {object} core_http_response.ErrorResponse "internal server error"
+// @Router /users [post]
 func (h *UsersHTTPHandler) CreateUser(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
