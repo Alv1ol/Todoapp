@@ -50,6 +50,19 @@ func (r *PatchTaskrequest) Validate() error {
 
 type PatchTaskResponce TaskDTOResponce
 
+// PatchTask godoc
+// @Summary Patch task
+// @Description Patch task by id. All fields are optional, but at least one must be provided. Title must be between 1 and 100 symbols. Description must be between 1 and 1000 symbols.
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id path int true "task id"
+// @Param request body PatchTaskrequest true "patch task request"
+// @Success 200 {object} PatchTaskResponce
+// @Failure 400 {object} core_http_response.ErrorResponse "bad request"
+// @Failure 404 {object} core_http_response.ErrorResponse "task not found"
+// @Failure 500 {object} core_http_response.ErrorResponse "internal server error"
+// @Router /tasks/{id} [patch]
 func (h *TasksHTTPHandler) PatchTask(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

@@ -1,0 +1,589 @@
+basePath: /api/v1
+definitions:
+  github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  github_com_Alv1ol_Todoapp_internal_core_transport_http_types.Nullable-bool:
+    properties:
+      set:
+        type: boolean
+      value:
+        type: boolean
+    type: object
+  github_com_Alv1ol_Todoapp_internal_core_transport_http_types.Nullable-string:
+    properties:
+      set:
+        type: boolean
+      value:
+        type: string
+    type: object
+  internal_features_statistics_transport_http.GetStatisticsResponce:
+    properties:
+      taskAverageComplitionTime:
+        type: string
+      taskCompleted:
+        type: integer
+      taskCompletedRate:
+        format: float64
+        type: number
+      taskCreated:
+        type: integer
+    type: object
+  internal_features_tasks_transport_http.CreateTaskRequest:
+    properties:
+      author_user_id:
+        type: integer
+      description:
+        maxLength: 1000
+        minLength: 1
+        type: string
+      title:
+        maxLength: 100
+        minLength: 1
+        type: string
+    required:
+    - author_user_id
+    - title
+    type: object
+  internal_features_tasks_transport_http.CreateTaskResponce:
+    properties:
+      author_user_id:
+        type: integer
+      completed:
+        type: boolean
+      completed_at:
+        type: string
+      create_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      version:
+        type: integer
+    type: object
+  internal_features_tasks_transport_http.GetTaskResponce:
+    properties:
+      author_user_id:
+        type: integer
+      completed:
+        type: boolean
+      completed_at:
+        type: string
+      create_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      version:
+        type: integer
+    type: object
+  internal_features_tasks_transport_http.PatchTaskResponce:
+    properties:
+      author_user_id:
+        type: integer
+      completed:
+        type: boolean
+      completed_at:
+        type: string
+      create_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      version:
+        type: integer
+    type: object
+  internal_features_tasks_transport_http.PatchTaskrequest:
+    properties:
+      completed:
+        $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_types.Nullable-bool'
+      description:
+        $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_types.Nullable-string'
+      title:
+        $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_types.Nullable-string'
+    type: object
+  internal_features_tasks_transport_http.TaskDTOResponce:
+    properties:
+      author_user_id:
+        type: integer
+      completed:
+        type: boolean
+      completed_at:
+        type: string
+      create_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      version:
+        type: integer
+    type: object
+  internal_features_users_transport_http.CreateUserRequest:
+    properties:
+      full_name:
+        example: John Doe
+        maxLength: 100
+        minLength: 3
+        type: string
+      phone_number:
+        example: "+79998887766"
+        type: string
+    required:
+    - full_name
+    type: object
+  internal_features_users_transport_http.CreateUserResponse:
+    properties:
+      full_name:
+        type: string
+      id:
+        type: integer
+      phone_number:
+        type: string
+      version:
+        type: integer
+    type: object
+  internal_features_users_transport_http.GetUserResponse:
+    properties:
+      full_name:
+        type: string
+      id:
+        type: integer
+      phone_number:
+        type: string
+      version:
+        type: integer
+    type: object
+  internal_features_users_transport_http.PatchUserRequest:
+    properties:
+      full_name:
+        $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_types.Nullable-string'
+      phone_number:
+        $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_types.Nullable-string'
+    type: object
+  internal_features_users_transport_http.PatchUserRespone:
+    properties:
+      full_name:
+        type: string
+      id:
+        type: integer
+      phone_number:
+        type: string
+      version:
+        type: integer
+    type: object
+  internal_features_users_transport_http.UserDTOResponce:
+    properties:
+      full_name:
+        type: string
+      id:
+        type: integer
+      phone_number:
+        type: string
+      version:
+        type: integer
+    type: object
+host: 127.0.0.1:5050
+info:
+  contact: {}
+  description: todoapp rest api scheme
+  title: todoapp
+  version: "1.0"
+paths:
+  /statistics:
+    get:
+      consumes:
+      - application/json
+      description: Get statistics. UserID, from and to query params are optional.
+        If userID is provided, statistics will be returned for specific user, otherwise
+        for all users. From and to query params are used to filter statistics by date.
+        Date must be in format `YYYY-MM-DD`. If from is provided, statistics will
+        be returned from this date, otherwise from the beginning of time. If to is
+        provided, statistics will be returned to this date, otherwise to the end of
+        time.
+      parameters:
+      - description: user id
+        in: query
+        name: user_id
+        type: integer
+      - description: from date in format `YYYY-MM-DD`
+        in: query
+        name: from
+        type: string
+      - description: to date in format `YYYY-MM-DD`
+        in: query
+        name: to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_features_statistics_transport_http.GetStatisticsResponce'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Get statistics
+      tags:
+      - statistics
+  /tasks:
+    get:
+      consumes:
+      - application/json
+      description: Get tasks with optional filtering by user_id and pagination
+      parameters:
+      - description: filter by user id
+        in: query
+        name: user_id
+        type: integer
+      - description: limit number of tasks returned
+        in: query
+        name: limit
+        type: integer
+      - description: offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/internal_features_tasks_transport_http.TaskDTOResponce'
+              type: array
+            type: array
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Get tasks
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      description: Create task with title, optional description and author user id
+      parameters:
+      - description: create task request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_tasks_transport_http.CreateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/internal_features_tasks_transport_http.CreateTaskResponce'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Create task
+      tags:
+      - tasks
+  /tasks/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete task by id
+      parameters:
+      - description: task id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: no content
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: task not found
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Delete task
+      tags:
+      - tasks
+    get:
+      consumes:
+      - application/json
+      description: Get task by id
+      parameters:
+      - description: task id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_features_tasks_transport_http.GetTaskResponce'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: task not found
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Get task
+      tags:
+      - tasks
+    patch:
+      consumes:
+      - application/json
+      description: Patch task by id. All fields are optional, but at least one must
+        be provided. Title must be between 1 and 100 symbols. Description must be
+        between 1 and 1000 symbols.
+      parameters:
+      - description: task id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: patch task request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_tasks_transport_http.PatchTaskrequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_features_tasks_transport_http.PatchTaskResponce'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: task not found
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Patch task
+      tags:
+      - tasks
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get users with pagination support using 'limit' and 'offset' query
+        parameters
+      parameters:
+      - description: number of users to return
+        in: query
+        name: limit
+        type: integer
+      - description: number of users to skip
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/internal_features_users_transport_http.UserDTOResponce'
+            type: array
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Get users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Create user with full name and optional phone number
+      parameters:
+      - description: create user request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_users_transport_http.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.CreateUserResponse'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Create user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user by id
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: no content
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: user not found
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Delete user
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Get user by id
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.GetUserResponse'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: user not found
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Get user
+      tags:
+      - users
+    patch:
+      consumes:
+      - application/json
+      description: Patch user by id. All fields are optional, but at least one must
+        be provided. FullName must be between 3 and 100 symbols. PhoneNumber must
+        be between 10 and 15 symbols and starts with `+` symbol.
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: patch user request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_users_transport_http.PatchUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.PatchUserRespone'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: user not found
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/github_com_Alv1ol_Todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Patch user
+      tags:
+      - users
+swagger: "2.0"

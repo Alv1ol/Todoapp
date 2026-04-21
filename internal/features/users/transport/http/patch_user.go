@@ -48,6 +48,19 @@ func (r *PatchUserRequest) Validate() error{
 
 type PatchUserRespone UserDTOResponce
 
+// PatchUser godoc
+// @Summary Patch user
+// @Description Patch user by id. All fields are optional, but at least one must be provided. FullName must be between 3 and 100 symbols. PhoneNumber must be between 10 and 15 symbols and starts with `+` symbol.
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "user id"
+// @Param request body PatchUserRequest true "patch user request"
+// @Success 200 {object} PatchUserRespone
+// @Failure 400 {object} core_http_response.ErrorResponse "bad request"
+// @Failure 404 {object} core_http_response.ErrorResponse "user not found"
+// @Failure 500 {object} core_http_response.ErrorResponse "internal server error"
+// @Router /users/{id} [patch]
 func (h *UsersHTTPHandler) PathUser(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

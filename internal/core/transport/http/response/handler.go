@@ -33,10 +33,10 @@ func (h *HTTPResponseHandler) NoContentresponce() {
 func (h *HTTPResponseHandler) ErrorResponse(err error, msg string) {
 	var (
 		statusCode int
-		logFunc func(string, ...zap.Field)
+		logFunc    func(string, ...zap.Field)
 	)
 
-	switch{
+	switch {
 	case errors.Is(err, core_errors.ErrInvalidArgument):
 		statusCode = http.StatusBadRequest
 		logFunc = h.log.Warn
@@ -79,7 +79,7 @@ func (h *HTTPResponseHandler) PanicResponse(p any, msg string) {
 func (h *HTTPResponseHandler) JSONResponce(
 	responseBody any,
 	statusCode int,
-){
+) {
 	h.rw.WriteHeader(statusCode)
 
 	if err := json.NewEncoder(h.rw).Encode(responseBody); err != nil {
@@ -92,9 +92,9 @@ func (h *HTTPResponseHandler) errorResponse(
 	err error,
 	msg string,
 ) {
-	response := map[string]string{
-		"message": msg,
-		"error":   err.Error(),
+	response := ErrorResponse{
+		Error:   err.Error(),
+		Message: msg,
 	}
 
 	h.JSONResponce(
